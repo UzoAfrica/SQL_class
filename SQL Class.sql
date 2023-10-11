@@ -22,3 +22,34 @@ INSERT INTO Employee (emp_id, emp_name, dept_name, salary) VALUES
 (10, 'Olivia Anderson', 'Marketing', 52500.00);
 
 SELECT * FROM Employee;
+
+-- QUESTION- Find the employees who's salary is more than the average salary earned by all employee
+
+select avg(salry) from emplyee;
+
+select *
+from emplyee 
+where salary > (selct avg(salary) from emplyee);
+
+ -- Scalary Subquery
+select *
+from Employee e
+join (select avg(salary) sal from employee ) avg_sal
+on e.salary > avg_sal.sal
+
+
+-- multiple row subquery
+-- subquery which returns multiple column and multiple
+-- subquery which returns only 1 column and multiple rows
+
+ -- Question: Find the employee who earn the highest salary in each department.
+ 
+ select dept_name, max(salary)
+ from employee
+ group by dept_name
+ 
+ select * 
+ from employee 
+ where (dept_name, salary) in (select dept_name, max(salary)
+							  from employee
+							  group by dept_name);
