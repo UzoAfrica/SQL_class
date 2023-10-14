@@ -131,12 +131,58 @@ where dept_name not in (select distinct dept_name from employee);
 	-- QUESTION : Find stores who's sales where better than the average sales accross all stores
 	
 	
-	select store_name, sum(price) as total_sales
+	select *
+	from (select store_name, sum(price) as total_sales
 	from sales
-	group by store_name
+	group by store_name) sales
 	
---	select
---	from ()
+	join (select avg(total_sales) as sales
+		 from(select store_name, sum(price) as total_sales
+			 from sales
+			 group by store_name) x) avg_sales
+			 on sales.total_sales > avg_sales.sales;
+			 
+			 OR
+			 
+			 with sales as 
+			 (select store_name, sum(price) as total_sales
+				from sales
+				group by store_name)
+			select 
+			from sales
+	
+			join (select avg(total_sales) as sales
+			 from sales x) avg_sales
+			 on sales.total_sales > avg_sales.sales;
+	
+	-- Using a subquery in SELECT clause.
+-- 	QUESTION: Fetch employee details and add remarks to those employees who earn more than the average pay.
+	
+	select *
+	, (case when salary > (select avg(salary) from employee) 
+	then 'Higher than average'
+	   else null
+	   end) as remarks
+	from employee
+	
+	OR
+	select *
+	, (case when salary > avg_sal.sal
+	then 'Higher than average'
+	   else null
+	   end) as remarks
+	from employee
+	cross join (select avg(salary) sal from employee) avg_sal;
+	
+	--QUESTION: Find the store who sold more units than the avarage units sold by all stores.
+	
+	select store_name, sum(quantity)
+		from sales
+		 group by store_name 
+		 having sum(quantity) > (select avg(quantity) from sales);
+		 
+		 
+		-- join (select avg ())
 	
 	
 	
